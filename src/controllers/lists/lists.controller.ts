@@ -59,4 +59,24 @@ export class ListsController {
         
         return reply.send({message: "Item deleted"});
     }
+
+    static async updateItemInList(request: FastifyRequest, reply: FastifyReply) {
+        const { id, itemId } = request.params as { id: string, itemId: string };
+        const newItem = request.body;
+        
+        const db = request.server.level;
+        
+        const list = await db.lists.get(id);
+        const listParsed = JSON.parse(list);
+        
+        listParsed.items = listParsed.items.map((item: Item) => {
+            if(item.id === itemId) {
+                return newItem;
+            }
+            return item;
+        });
+        await db.lists.put(id, JSON.stringify(listParsed));
+        
+        return reply.send({message: "Item updated"});
+    }
 }
