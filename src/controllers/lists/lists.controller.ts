@@ -30,4 +30,17 @@ export class ListsController {
         
         return reply.send(items);
     }
+
+    static async createItemInList(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+        const newItem = request.body;
+        
+        const db = request.server.level;
+        const list = await db.lists.get(id);
+        const listParsed = JSON.parse(list);
+        listParsed.items.push(newItem);
+        await db.lists.put(id, JSON.stringify(listParsed));
+        
+        return reply.send({message: "Item created"});
+    }
 }
