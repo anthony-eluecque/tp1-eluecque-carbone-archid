@@ -1,4 +1,4 @@
-import { List } from '../../types/index';
+import { List } from '../../types';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export class ListsController {
