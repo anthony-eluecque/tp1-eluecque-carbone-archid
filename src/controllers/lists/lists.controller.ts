@@ -1,4 +1,4 @@
-import { List } from '../../types';
+import { Item, List } from '../../types';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export class ListsController {
@@ -36,11 +36,27 @@ export class ListsController {
         const newItem = request.body;
         
         const db = request.server.level;
+        
         const list = await db.lists.get(id);
         const listParsed = JSON.parse(list);
+        
         listParsed.items.push(newItem);
         await db.lists.put(id, JSON.stringify(listParsed));
         
         return reply.send({message: "Item created"});
+    }
+
+    static async deleteItemInList(request: FastifyRequest, reply: FastifyReply) {
+        const { id, itemId } = request.params as { id: string, itemId: string };
+        
+        const db = request.server.level;
+        
+        const list = await db.lists.get(id);
+        const listParsed = JSON.parse(list);
+        
+        listParsed.items = listParsed.items.filter((item: Item) => item.id !== itemId);
+        await db.lists.put(id, JSON.stringify(listParsed));
+        
+        return reply.send({message: "Item deleted"});
     }
 }
