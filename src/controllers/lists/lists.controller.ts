@@ -1,4 +1,4 @@
-import { List } from '../../types/index';
+import { Item, List } from '../../types';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export class ListsController {
@@ -20,4 +20,63 @@ export class ListsController {
         await db.lists.put(newList.id, JSON.stringify(newList));
         return reply.send({message: "List created"});
     }   
+
+    static async getItemsFromList(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+
+        const db = request.server.level;
+        const list = await db.lists.get(id);
+        const items = JSON.parse(list).items;
+        
+        return reply.send(items);
+    }
+
+    static async createItemInList(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+        const newItem = request.body;
+        
+        const db = request.server.level;
+        
+        const list = await db.lists.get(id);
+        const listParsed = JSON.parse(list);
+        
+        listParsed.items.push(newItem);
+        await db.lists.put(id, JSON.stringify(listParsed));
+        
+        return reply.send({message: "Item created"});
+    }
+
+    static async deleteItemInList(request: FastifyRequest, reply: FastifyReply) {
+        const { id, itemId } = request.params as { id: string, itemId: string };
+        
+        const db = request.server.level;
+        
+        const list = await db.lists.get(id);
+        const listParsed = JSON.parse(list);
+        
+        listParsed.items = listParsed.items.filter((item: Item) => item.id !== itemId);
+        await db.lists.put(id, JSON.stringify(listParsed));
+        
+        return reply.send({message: "Item deleted"});
+    }
+
+    static async updateItemInList(request: FastifyRequest, reply: FastifyReply) {
+        const { id, itemId } = request.params as { id: string, itemId: string };
+        const newItem = request.body;
+        
+        const db = request.server.level;
+        
+        const list = await db.lists.get(id);
+        const listParsed = JSON.parse(list);
+        
+        listParsed.items = listParsed.items.map((item: Item) => {
+            if(item.id === itemId) {
+                return newItem;
+            }
+            return item;
+        });
+        await db.lists.put(id, JSON.stringify(listParsed));
+        
+        return reply.send({message: "Item updated"});
+    }
 }
