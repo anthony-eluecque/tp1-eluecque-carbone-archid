@@ -14,10 +14,22 @@ export class ListsController {
         reply.send(result);
     }
 
+    static async getListById(request: FastifyRequest, reply: FastifyReply) {
+        const db = request.server.level;
+        const { id } = request.params as { id:string }
+        const list = await db.lists.get(id);
+
+        reply.send(JSON.parse(list) as List);
+    }
+
     static async createList(request: FastifyRequest, reply: FastifyReply) {
         const newList : List = request.body as List;
         const db = request.server.level;
         await db.lists.put(newList.id, JSON.stringify(newList));
         return reply.send({message: "List created"});
-    }   
+    }
+
+    static async putList(request: FastifyRequest, reply: FastifyReply) {
+        
+    }
 }
