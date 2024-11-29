@@ -5,6 +5,8 @@ export interface List {
     items?: Array<Item>
 }
 
+export interface RequestListUpdated extends Omit<List, 'id'>{}
+
 export interface Item {
     id: string;
     description: string;

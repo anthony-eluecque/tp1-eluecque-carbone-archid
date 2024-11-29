@@ -1,4 +1,4 @@
-import { Item, List } from '../../types';
+import { Item, List, RequestListUpdated } from '../../types';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export class ListsController {
@@ -12,6 +12,14 @@ export class ListsController {
             result.push(JSON.parse(value) as List);
         }
         reply.send(result);
+    }
+
+    static async getListById(request: FastifyRequest, reply: FastifyReply) {
+        const db = request.server.level;
+        const { id } = request.params as { id:string }
+        const list = await db.lists.get(id);
+
+        reply.send(JSON.parse(list) as List);
     }
 
     static async createList(request: FastifyRequest, reply: FastifyReply) {
@@ -78,5 +86,18 @@ export class ListsController {
         await db.lists.put(id, JSON.stringify(listParsed));
         
         return reply.send({message: "Item updated"});
+    }
+
+    static async modifyList(request: FastifyRequest, reply: FastifyReply) {
+        const db = request.server.level;
+        const { id } = request.params as { id:string }
+        const list = await db.lists.get(id);
+
+        const listUpdated: RequestListUpdated = request.body as RequestListUpdated;
+        console.log(listUpdated);
+        const parsedList = {...JSON.parse(list), ...listUpdated}
+
+        await db.lists.put(id, JSON.stringify(parsedList));
+        return reply.send({message: "List updated !", data: parsedList})
     }
 }
