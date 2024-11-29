@@ -20,4 +20,14 @@ export class ListsController {
         await db.lists.put(newList.id, JSON.stringify(newList));
         return reply.send({message: "List created"});
     }   
+
+    static async getItemsFromList(request: FastifyRequest, reply: FastifyReply) {
+        const { id } = request.params as { id: string };
+
+        const db = request.server.level;
+        const list = await db.lists.get(id);
+        const items = JSON.parse(list).items;
+        
+        return reply.send(items);
+    }
 }
