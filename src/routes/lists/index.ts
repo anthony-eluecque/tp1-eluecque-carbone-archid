@@ -6,6 +6,7 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
     fastify.get('/', ListsController.getLists);
     fastify.post('/', ListsController.createList);
     fastify.get('/:id', ListsController.getListById);
+    fastify.put('/:id', ListsController.modifyList);
 }
 
 export default lists;
