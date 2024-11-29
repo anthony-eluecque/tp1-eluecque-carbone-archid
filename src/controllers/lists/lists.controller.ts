@@ -1,17 +1,23 @@
+import { Res } from '../../helpers';
 import { Item, List, RequestListUpdated } from '../../types';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
 export class ListsController {
 
     static async getLists(request: FastifyRequest, reply: FastifyReply) {
-        const db = request.server.level;
-        const lists = db.lists.iterator();
-        const result: List[] = []
-
-        for await(const [_, value] of lists) {
-            result.push(JSON.parse(value) as List);
+        try {
+            const db = request.server.level;
+            const lists = db.lists.iterator();
+            const result: List[] = []
+    
+            // @ts-ignore
+            for await(const [_, value] of lists) { 
+                result.push(JSON.parse(value) as List);
+            }
+            Res.send(reply, 200, "Lists fetched", result);
+        } catch (error) {
+            Res.error(reply, 500, "Error while fetching lists", error);
         }
-        reply.send(result);
     }
 
     static async getListById(request: FastifyRequest, reply: FastifyReply) {
