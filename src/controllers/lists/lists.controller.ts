@@ -23,12 +23,15 @@ export class ListsController {
     async getListById(request: FastifyRequest, reply: FastifyReply) {
         try {
             const { id } = request.params as { id:string }
-            const list = await this._repository.getListById(id);
-            Res.send(reply, 200, "List fetched", list);
+            const result = await this._repository.getListById(id);
+
+            if (!result.success) {
+                Res.send(reply, 404, result.error!)
+            }
+            Res.send(reply, 200, result.message!, result.data);
         } catch (error) {
             Res.error(reply,500, "Error while fetching lists", error);
         }
-
     }
 
     async createList(request: FastifyRequest, reply: FastifyReply) {
@@ -44,9 +47,13 @@ export class ListsController {
 
     async getItemsFromList(request: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id } = request.params as { id : string };
-            const list = await this._repository.getListById(id);
-            const items = list.items;
+            const { id } = request.params as { id:string }
+            const result = await this._repository.getItemsInList(id);
+
+            if (!result.success) {
+                Res.send(reply, 404, result.error!)
+            }         
+            const items = result.data!;
             Res.send(reply, 200, "Item fetched", items);            
         } catch (error) {
             Res.error(reply, 500, "Error while fetching list", error);
@@ -57,7 +64,12 @@ export class ListsController {
         try {
             const { id } = request.params as { id: string };
             const newItem = request.body as Item;
-            await this._repository.createItemInList(id, newItem);
+            const result = await this._repository.createItemInList(id, newItem);
+            
+            if (!result.success) {
+                Res.send(reply, 404, result.error!);
+            }
+
             const list = await this._repository.getListById(id);        
             Res.send(reply, 200, "Item created in the list", list);
         } catch (error) {
@@ -69,7 +81,12 @@ export class ListsController {
     async deleteItemInList(request: FastifyRequest, reply: FastifyReply) {
         try {
             const { id, itemId } = request.params as { id: string, itemId: string };
-            await this._repository.deleteItemInList(id, itemId);        
+            const result = await this._repository.deleteItemInList(id, itemId);        
+            
+            if (!result.success) {
+                Res.send(reply, 404, result.error!);
+            }
+            
             Res.send(reply, 200, "Item deleted");
         } catch (error) {
             Res.error(reply, 500, "Error while deleting item", error);
@@ -81,8 +98,13 @@ export class ListsController {
         try {
             const { id, itemId } = request.params as { id: string, itemId: string };
             const newItem = request.body;
-            await this._repository.updateItemInList(id, itemId, newItem);        
-            Res.send(reply,200, "Item updated", newItem)   
+            const result = await this._repository.updateItemInList(id, itemId, newItem);        
+            
+            if (!result.success) {
+                Res.send(reply, 404, result.error!);
+            }
+            
+            Res.send(reply,200, result.message!, newItem)   
         } catch (error) {
             Res.error(reply, 500, "Error while updating item", error);
         }
@@ -90,13 +112,16 @@ export class ListsController {
 
     async modifyList(request: FastifyRequest, reply: FastifyReply) {
         try {   
-            const db = request.server.level;
             const { id } = request.params as { id:string }
-            const list = await this._repository.getListById(id);
+            const result = await this._repository.getListById(id);
+
+            if (!result.success) {
+                Res.send(reply, 404, result.error!);
+            }
 
             const listUpdated: RequestListUpdated = request.body as RequestListUpdated;
-            const parsedList = {...list, ...listUpdated}
-            await db.lists.put(id, JSON.stringify(parsedList));
+            const parsedList = {...result.data!, ...listUpdated}
+            this._repository.updateList(id, parsedList)
 
             Res.send(reply, 200, "List updated", parsedList)
         } catch (error) {
