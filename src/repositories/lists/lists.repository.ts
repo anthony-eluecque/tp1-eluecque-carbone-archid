@@ -51,8 +51,16 @@ export default class ListsRepository {
         return result;
     }
 
-    createList = async(list : List) : Promise<void> => {
+    createList = async(list : List) : Promise<RepositoryResult<null>> => {
+        
+        const listResult = await this.getListById(list.id);
+
+        if (listResult.success) {
+            return { success: false, error: "List with this id is existing" };
+        }
+
         await this.db.level.lists.put(list.id, JSON.stringify(list));
+        return { success: true, message: "List succesfully created" };
     }
 
     updateList = async (id : string, list : List) : Promise<void> => {
