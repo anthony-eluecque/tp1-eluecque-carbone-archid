@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { Item, List } from "../../types";
+import { TodoItem, TodoList } from "../../types";
 import { } from "@fastify/leveldb"
 
 interface LevelDBError extends Error {
@@ -21,7 +21,7 @@ export default class ListsRepository {
 
     constructor(private db : FastifyInstance) {}
 
-    getListById = async (id : string) : Promise<RepositoryResult<List>> => {
+    getListById = async (id : string) : Promise<RepositoryResult<TodoList>> => {
         try {
             const list = await this.db.level.lists.get(id);
             return { 
@@ -40,9 +40,9 @@ export default class ListsRepository {
         }  
     }
 
-    getLists = async () : Promise<List[]> => {
+    getLists = async () : Promise<TodoList[]> => {
         const lists = this.db.level.lists.iterator();
-        const result: List[] = []
+        const result: TodoList[] = new Array<TodoList>();
 
         // @ts-ignore
         for await(const [_, value] of lists) { 
@@ -51,7 +51,7 @@ export default class ListsRepository {
         return result;
     }
 
-    createList = async(list : List) : Promise<RepositoryResult<null>> => {
+    createList = async(list : TodoList) : Promise<RepositoryResult<null>> => {
         
         const listResult = await this.getListById(list.id);
 
@@ -63,7 +63,7 @@ export default class ListsRepository {
         return { success: true, message: "List succesfully created" };
     }
 
-    updateList = async (id : string, list : List) : Promise<void> => {
+    updateList = async (id : string, list : TodoList) : Promise<void> => {
         await this.db.level.lists.put(id, JSON.stringify(list));
     }
 
@@ -127,7 +127,7 @@ export default class ListsRepository {
 
     }
 
-    getItemsInList = async (id : string) : Promise<RepositoryResult<Item[]>> => {
+    getItemsInList = async (id : string) : Promise<RepositoryResult<TodoItem[]>> => {
         const listResult = await this.getListById(id);
 
         if (!listResult.success) {

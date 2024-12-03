@@ -1,29 +1,18 @@
 import { Res } from '../../helpers';
-import { ListsRepository } from '../../repositories/lists';
-import { Item, List, RequestListUpdated } from '../../types';
+import { ListsRepository } from '../../repositories';
+import { 
+    TodoItem, 
+    TodoList, 
+    RequestListUpdated, 
+    HttpStatusCode, 
+    ListParams, 
+    ItemsParams 
+} from '../../types';
 import { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
-
-interface ItemsParams { 
-    Params : {id : string, itemId: string}
-}
-
-interface ListParams {
-    Params : {id: string}
-}
-
-export enum HttpStatusCode {
-    OK = 200,
-    CREATED = 201,
-    NO_CONTENT = 204,
-    BAD_REQUEST = 400,
-    NOT_FOUND = 404,
-    CONFLICT = 409,
-    INTERNAL_SERVER_ERROR = 500
-}
 
 export class ListsController {
 
-    private _repository: ListsRepository;
+    private readonly _repository: ListsRepository;
 
     constructor(server: FastifyInstance) {
         this._repository = new ListsRepository(server);
@@ -54,7 +43,7 @@ export class ListsController {
 
     async createList(request: FastifyRequest<ListParams>, reply: FastifyReply) {
         try {
-            const newList : List = request.body as List;
+            const newList : TodoList = request.body as TodoList;
             const result = await this._repository.createList(newList);
 
             if (!result.success) {
@@ -86,7 +75,7 @@ export class ListsController {
     async createItemInList(request: FastifyRequest<ListParams>, reply: FastifyReply) {
         try {
             const { id } = request.params;
-            const newItem = request.body as Item;
+            const newItem : TodoItem = request.body as TodoItem;
             const result = await this._repository.createItemInList(id, newItem);
             
             if (!result.success) {
@@ -98,7 +87,6 @@ export class ListsController {
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while creating item", error)
         }
- 
     }
 
     async deleteItemInList(request: FastifyRequest<ItemsParams>, reply: FastifyReply) {
