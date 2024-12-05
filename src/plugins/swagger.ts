@@ -9,7 +9,7 @@ export default fp<FastifySwaggerOptions>(async (fastify) => {
         {
           url: 'http://localhost:3000',
           description: 'Development server'
-        }
+        },
       ],
     }
   })
