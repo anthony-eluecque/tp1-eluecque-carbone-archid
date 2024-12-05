@@ -6,7 +6,8 @@ import {
     RequestListUpdated, 
     HttpStatusCode, 
     ListParams, 
-    ItemsParams 
+    ItemsParams, 
+    State
 } from '../../types';
 import { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
 
@@ -50,7 +51,7 @@ export class ListsController {
                 Res.send(reply, HttpStatusCode.CONFLICT, result.error!)
             }
 
-            Res.send(reply, HttpStatusCode.CREATED, result.message!, newList)
+            Res.send(reply, HttpStatusCode.CREATED, result.message!, result.data)
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while creating list", error);
         }
@@ -59,7 +60,7 @@ export class ListsController {
 
     async getItemsFromList(request: FastifyRequest<ListParams>, reply: FastifyReply) {
         try {
-            const { id } = request.params as { id:string }
+            const { id } = request.params as { id:string };
             const result = await this._repository.getItemsInList(id);
 
             if (!result.success) {
@@ -136,8 +137,28 @@ export class ListsController {
 
             Res.send(reply, HttpStatusCode.OK, "List updated", parsedList)
         } catch (error) {
-            console.error(error)
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while updating list", error);
+        }
+    }
+
+    async changeListState(request : FastifyRequest, reply: FastifyReply) {
+        try {
+            const { id, state } = request.params as { id : string, state: State }
+            const result = await this._repository.getListById(id);
+
+            if (!result.success) {
+                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
+            }
+        
+            const stateResult = await this._repository.updateListState(id, state);
+
+            if (!stateResult.success) {
+                Res.send(reply, HttpStatusCode.BAD_REQUEST, stateResult.error!);
+            }
+
+            Res.send(reply, HttpStatusCode.OK, stateResult.message!);            
+        } catch (error) {
+            Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while updating state's list", error);
         }
     }
 }
