@@ -1,5 +1,5 @@
 export enum State { 
-    "PENDING", 
-    "IN-PROGRESS", 
-    "DONE" 
+    PENDING = "PENDING", 
+    IN_PROGRESS = "IN-PROGRESS", 
+    DONE = "DONE" 
 };

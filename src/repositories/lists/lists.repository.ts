@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { TodoItem, TodoList } from "../../types";
+import { State, TodoItem, TodoList } from "../../types";
 import { } from "@fastify/leveldb"
 
 interface LevelDBError extends Error {
@@ -51,16 +51,26 @@ export default class ListsRepository {
         return result;
     }
 
-    createList = async(list : TodoList) : Promise<RepositoryResult<null>> => {
+    createList = async(list : TodoList) : Promise<RepositoryResult<TodoList>> => {
         
         const listResult = await this.getListById(list.id);
 
         if (listResult.success) {
             return { success: false, error: "List with this id is existing" };
         }
+        
+        const newList : TodoList = {
+            ...list,
+            state : list.state ?? State.PENDING,
+            items: list.items ?? []
+        }
 
-        await this.db.level.lists.put(list.id, JSON.stringify(list));
-        return { success: true, message: "List succesfully created" };
+        await this.db.level.lists.put(newList.id, JSON.stringify(newList));
+        return { 
+            success: true, 
+            message: "List succesfully created",
+            data: newList
+        };
     }
 
     updateList = async (id : string, list : TodoList) : Promise<void> => {
@@ -136,5 +146,30 @@ export default class ListsRepository {
 
         const list = listResult.data!;  
         return {success : true, message: "Items fetched", data: list.items}
+    }
+
+    updateListState = async (id: string, state: State) : Promise<RepositoryResult<TodoList>> => {
+        
+
+        if (!Object.values(State).includes(state)) {
+            return { 
+                success: false, 
+                error: "Invalid state value" 
+            };
+        }
+    
+        const listResult = await this.getListById(id);
+
+        if (!listResult.success) {
+            return { success: false, error: listResult.error };
+        }
+
+        const list = listResult.data!;
+        list.state = state;
+        await this.updateList(id, list);
+        return {
+            success: true, 
+            message: "State updated" 
+        }
     }
 };

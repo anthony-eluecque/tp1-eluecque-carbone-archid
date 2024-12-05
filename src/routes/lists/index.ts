@@ -13,6 +13,7 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
     fastify.post('/:id/items', listsController.createItemInList.bind(listsController));
     fastify.delete('/:id/items/:itemId', listsController.deleteItemInList.bind(listsController));
     fastify.put('/:id/items/:itemId', listsController.updateItemInList.bind(listsController));
+    fastify.put('/:id/status/:state', listsController.changeListState.bind(listsController));
 }
 
 export default lists;
