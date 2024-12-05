@@ -35,9 +35,7 @@ export class ItemsController {
             }
 
             const item = result.data!;
-            console.log(item);
             item.assignedTo.push(userId);
-            console.log(item);
             await this._repository.updateItem(itemId, item);
             Res.send(reply, HttpStatusCode.OK, result.message!, item);
 

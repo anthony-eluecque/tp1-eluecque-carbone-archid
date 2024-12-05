@@ -65,10 +65,6 @@ export default class ItemsRepository {
             result.push(JSON.parse(value));
         }
 
-        console.log('---------------------------------')
-        console.log(result);
-        console.log(result[0].items);
-
         for (let i = 0; i < result.length; i++) {
             for (let j = 0; j < result[i].items.length; j++) {
                 // @ts-ignore
