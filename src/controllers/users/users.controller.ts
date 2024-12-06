@@ -17,9 +17,9 @@ export class UsersController {
             const result = await this._repository.getUserById(id);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
             }
-            Res.send(reply, HttpStatusCode.OK, result.message!, result.data);
+            return Res.send(reply, HttpStatusCode.OK, result.message!, result.data);
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while fetching user", error);
         }
@@ -31,10 +31,10 @@ export class UsersController {
             const result = await this._repository.createUser(newUser);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.CONFLICT, result.error!)
+                return Res.send(reply, HttpStatusCode.CONFLICT, result.error!)
             }
 
-            Res.send(reply, HttpStatusCode.CREATED, result.message!, newUser)
+            return Res.send(reply, HttpStatusCode.CREATED, result.message!, newUser)
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while creating user", error);
         }
