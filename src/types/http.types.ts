@@ -36,6 +36,10 @@ export interface ConflictResponse {
     message: string;
 }
 
+export interface BadRequest {
+    message: string;
+}
+
 export interface NoContentResponse {}
 
 export interface GetListsResponse extends SuccessResponse<TodoList[]> {};

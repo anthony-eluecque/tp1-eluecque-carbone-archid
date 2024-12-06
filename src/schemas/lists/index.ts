@@ -5,5 +5,7 @@ export {
     updateList,
     getItemsInList,
     deleteItemInList,
-    createItemInList
+    createItemInList,
+    updateItemInList,
+    changeListState
 } from "./schemas";

@@ -103,6 +103,13 @@ export default class ListsRepository {
             return { success: false, error: listResult.error };
         }
 
+        if (!Object.values(State).includes(newItem.state)) {
+            return { 
+                success: false, 
+                error: "Invalid state value" 
+            };
+        }
+
         const list = listResult.data!;
 
         const itemIndex = list.items.findIndex(item => item.id === itemId);
@@ -111,7 +118,10 @@ export default class ListsRepository {
             return { success: false, error: `Item with id ${itemId} not found in list ${id}` };
         }
 
-        list.items[itemIndex] = newItem;
+        list.items[itemIndex] = {
+            ...list.items[itemIndex],
+            ...newItem
+        };
         await this.updateList(id, list);
 
         return { success: true, message: `Item with id ${itemId} updated in list ${id}` };
@@ -122,6 +132,13 @@ export default class ListsRepository {
 
         if (!listResult.success) {
             return { success: false, error: listResult.error };
+        }
+        
+        if (!Object.values(State).includes(newItem.state)) {
+            return { 
+                success: false, 
+                error: "Invalid state value" 
+            };
         }
 
         const list = listResult.data!;        

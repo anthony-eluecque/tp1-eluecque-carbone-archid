@@ -48,6 +48,11 @@ export default fp<FastifySwaggerOptions>(async (fastify) => {
     ...JsonSchemas.definitions.NoContentResponse,
   });
 
+  fastify.addSchema({
+    "$id": "BadRequest",
+    ...JsonSchemas.definitions.BadRequest
+  });
+
   fastify.register(swagger, {
     openapi: {
       info: { title: 'Todo API', version: '1.0.0' },

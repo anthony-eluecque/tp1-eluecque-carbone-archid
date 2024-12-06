@@ -203,3 +203,81 @@ export const deleteItemInList = {
         }
     }
 }
+
+export const updateItemInList = {
+    tags: ['Lists'],
+    description: 'Update an item in a list',
+    params: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'string',
+                description: 'The id of the list'
+            },
+            itemId: {
+                type: 'string',
+                description: 'The id of the item'
+            }
+        }
+    },
+    body: {
+        type: 'object',
+        properties: {
+            state: {
+                $ref: 'State',
+                description: 'The state of the item'
+            },
+            description: {
+                type: 'string',
+                description: 'The description of the item'
+            },
+        }
+    },
+    response: {
+        200: {
+            description: 'Item updated',
+            $ref: 'TodoListResponse'
+        },
+        404: {
+            description: 'Item not found',
+            $ref: 'NotFoundResponse'
+        },
+        409: {
+            description: 'Conflicts - invalid state',
+            $ref: 'ConflictResponse'
+        }
+    }
+}
+
+
+export const changeListState = {
+    tags: ['Lists'],
+    description: 'Change the state of a list',
+    params: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'string',
+                description: 'The id of the list'
+            },
+            state: {
+                $ref: 'State',
+                description: 'The new state of the list'
+            }
+        }
+    },
+    response: {
+        204: {
+            description: 'List state changed',
+            $ref: 'NoContentResponse'
+        },
+        400: {
+            description: 'Invalid state',
+            $ref: 'BadRequest'
+        },
+        404: {
+            description: 'List not found',
+            $ref: 'NotFoundResponse'
+        }
+    }
+}

@@ -44,6 +44,7 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
 
     fastify.put(
         '/:id/items/:itemId',
+        { schema : schemas.lists.updateItemInList },
         listsController.updateItemInList.bind(listsController)
     );
 
@@ -53,7 +54,11 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
         listsController.deleteItemInList.bind(listsController)
     );
 
-    fastify.put('/:id/status/:state', listsController.changeListState.bind(listsController));
+    fastify.put(
+        '/:id/status/:state', 
+        { schema : schemas.lists.changeListState },
+        listsController.changeListState.bind(listsController)
+    );
 }
 
 export default lists;

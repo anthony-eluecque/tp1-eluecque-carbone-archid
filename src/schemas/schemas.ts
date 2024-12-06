@@ -5,7 +5,9 @@ import {
     updateList,
     getItemsInList,
     deleteItemInList,
-    createItemInList
+    createItemInList,
+    updateItemInList,
+    changeListState
 } from "./lists";
 
 const schemas = {
@@ -16,7 +18,9 @@ const schemas = {
         updateList: updateList,
         getItemsInList: getItemsInList,
         createItemInList: createItemInList,
-        deleteItemInList: deleteItemInList
+        deleteItemInList: deleteItemInList,
+        updateItemInList: updateItemInList,
+        changeListState: changeListState
     }
 }
 

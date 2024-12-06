@@ -110,13 +110,16 @@ export class ListsController {
         try {
             const { id, itemId } = request.params;
             const newItem = request.body;
+
+            
             const result = await this._repository.updateItemInList(id, itemId, newItem);        
             
             if (!result.success) {
                 return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
             }
-            
-            return Res.send(reply, HttpStatusCode.OK, result.message!, newItem)   
+
+            const resultItem = await this._repository.getListById(id);
+            return Res.send(reply, HttpStatusCode.OK, result.message!, resultItem.data);   
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while updating item", error);
         }
@@ -156,7 +159,7 @@ export class ListsController {
                 return Res.send(reply, HttpStatusCode.BAD_REQUEST, stateResult.error!);
             }
 
-            Res.send(reply, HttpStatusCode.OK, stateResult.message!);            
+            return Res.send(reply, HttpStatusCode.NO_CONTENT, stateResult.message!);            
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while updating state's list", error);
         }

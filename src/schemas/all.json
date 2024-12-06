@@ -103,6 +103,18 @@
       ],
       "additionalProperties": false
     },
+    "BadRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
     "NoContentResponse": {
       "type": "object",
       "additionalProperties": false
