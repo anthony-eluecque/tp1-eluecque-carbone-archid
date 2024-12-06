@@ -6,32 +6,47 @@ export default fp<FastifySwaggerOptions>(async (fastify) => {
   fastify.addSchema({
     "$id": "TodoList",
     ...JsonSchemas.definitions.TodoList,    
-  })
+  });
 
   fastify.addSchema({
     "$id": "TodoItem",
     ...JsonSchemas.definitions.TodoItem,
-  })
+  });
 
   fastify.addSchema({
     "$id": "State",
     ...JsonSchemas.definitions.State,
-  })
+  });
 
   fastify.addSchema({
     "$id": "TodoListsResponse",
     ...JsonSchemas.definitions.GetListsResponse,
-  })
+  });
 
   fastify.addSchema({
     "$id": "TodoListResponse",
     ...JsonSchemas.definitions.GetListByIdResponse,
-  })
+  });
 
   fastify.addSchema({
     "$id": "NotFoundResponse",
     ...JsonSchemas.definitions.NotFoundResponse,
-  })
+  });
+
+  fastify.addSchema({
+    "$id": "ConflictResponse",
+    ...JsonSchemas.definitions.ConflictResponse,
+  });
+
+  fastify.addSchema({
+    "$id": "TodoItemsResponse",
+    ...JsonSchemas.definitions.GetItemsInList,
+  });
+
+  fastify.addSchema({
+    "$id": "NoContentResponse",
+    ...JsonSchemas.definitions.NoContentResponse,
+  });
 
   fastify.register(swagger, {
     openapi: {
@@ -43,6 +58,6 @@ export default fp<FastifySwaggerOptions>(async (fastify) => {
         },
       ],
     }
-  })
+  });
 })
 

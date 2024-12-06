@@ -1,9 +1,22 @@
-import { getLists, getListById } from "./lists";
+import { 
+    getLists, 
+    getListById, 
+    createList,
+    updateList,
+    getItemsInList,
+    deleteItemInList,
+    createItemInList
+} from "./lists";
 
 const schemas = {
     lists : {
         getLists : getLists,
-        getListById : getListById
+        getListById : getListById,
+        createList: createList,
+        updateList: updateList,
+        getItemsInList: getItemsInList,
+        createItemInList: createItemInList,
+        deleteItemInList: deleteItemInList
     }
 }
 

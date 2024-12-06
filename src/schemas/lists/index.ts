@@ -1,4 +1,9 @@
 export { 
     getLists,
-    getListById
+    getListById,
+    createList,
+    updateList,
+    getItemsInList,
+    deleteItemInList,
+    createItemInList
 } from "./schemas";

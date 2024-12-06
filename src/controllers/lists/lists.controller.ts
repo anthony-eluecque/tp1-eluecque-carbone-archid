@@ -34,9 +34,9 @@ export class ListsController {
             const result = await this._repository.getListById(id);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
             }
-            Res.send(reply, HttpStatusCode.OK, result.message!, result.data);
+            return Res.send(reply, HttpStatusCode.OK, result.message!, result.data);
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while fetching lists", error);
         }
@@ -48,10 +48,10 @@ export class ListsController {
             const result = await this._repository.createList(newList);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.CONFLICT, result.error!)
+                return Res.send(reply, HttpStatusCode.CONFLICT, result.error!)
             }
 
-            Res.send(reply, HttpStatusCode.CREATED, result.message!, result.data)
+            return Res.send(reply, HttpStatusCode.CREATED, result.message!, result.data)
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while creating list", error);
         }
@@ -64,10 +64,10 @@ export class ListsController {
             const result = await this._repository.getItemsInList(id);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
             }         
             const items = result.data!;
-            Res.send(reply, HttpStatusCode.OK, "Item fetched", items);            
+            return Res.send(reply, HttpStatusCode.OK, "Items fetched", items);            
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while fetching list", error);
         }
@@ -80,11 +80,11 @@ export class ListsController {
             const result = await this._repository.createItemInList(id, newItem);
             
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.CONFLICT, result.error!);
+                return Res.send(reply, HttpStatusCode.CONFLICT, result.error!);
             }
 
             const list = await this._repository.getListById(id);        
-            Res.send(reply, HttpStatusCode.CREATED, "Item created in the list", list);
+            return Res.send(reply, HttpStatusCode.CREATED, "Item created in the list", list.data);
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while creating item", error)
         }
@@ -96,10 +96,10 @@ export class ListsController {
             const result = await this._repository.deleteItemInList(id, itemId);        
             
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
             }
             
-            Res.send(reply, HttpStatusCode.NO_CONTENT, "Item deleted");
+            return Res.send(reply, HttpStatusCode.NO_CONTENT, "Item deleted");
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while deleting item", error);
         }
@@ -113,10 +113,10 @@ export class ListsController {
             const result = await this._repository.updateItemInList(id, itemId, newItem);        
             
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
             }
             
-            Res.send(reply, HttpStatusCode.OK, result.message!, newItem)   
+            return Res.send(reply, HttpStatusCode.OK, result.message!, newItem)   
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while updating item", error);
         }
@@ -128,14 +128,14 @@ export class ListsController {
             const result = await this._repository.getListById(id);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
             }
 
             const listUpdated: RequestListUpdated = request.body as RequestListUpdated;
             const parsedList = {...result.data!, ...listUpdated}
             this._repository.updateList(id, parsedList)
 
-            Res.send(reply, HttpStatusCode.OK, "List updated", parsedList)
+            return Res.send(reply, HttpStatusCode.OK, "List updated", parsedList)
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while updating list", error);
         }
@@ -147,13 +147,13 @@ export class ListsController {
             const result = await this._repository.getListById(id);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!);
             }
         
             const stateResult = await this._repository.updateListState(id, state);
 
             if (!stateResult.success) {
-                Res.send(reply, HttpStatusCode.BAD_REQUEST, stateResult.error!);
+                return Res.send(reply, HttpStatusCode.BAD_REQUEST, stateResult.error!);
             }
 
             Res.send(reply, HttpStatusCode.OK, stateResult.message!);            

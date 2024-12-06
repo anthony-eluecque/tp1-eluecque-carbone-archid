@@ -20,21 +20,25 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
 
     fastify.post(
         '/',
+        { schema : schemas.lists.createList },
         listsController.createList.bind(listsController)
     );
 
     fastify.put(
         '/:id',
+        { schema : schemas.lists.updateList },
         listsController.modifyList.bind(listsController)
     );
 
     fastify.get(
         '/:id/items',
+        { schema : schemas.lists.getItemsInList },
         listsController.getItemsFromList.bind(listsController)
     );
 
     fastify.post(
         '/:id/items',
+        { schema : schemas.lists.createItemInList },
         listsController.createItemInList.bind(listsController)
     );
 
@@ -45,6 +49,7 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
 
     fastify.delete(
         '/:id/items/:itemId',
+        { schema : schemas.lists.deleteItemInList },
         listsController.deleteItemInList.bind(listsController)
     );
 

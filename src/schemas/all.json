@@ -91,6 +91,22 @@
       ],
       "additionalProperties": false
     },
+    "ConflictResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "NoContentResponse": {
+      "type": "object",
+      "additionalProperties": false
+    },
     "GetListsResponse": {
       "type": "object",
       "additionalProperties": false,
@@ -211,6 +227,44 @@
         },
         "data": {
           "$ref": "TodoList#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "GetItemsInList": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<def-interface-795923995-127-257-795923995-0-258[]>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
         }
       },
       "required": [
