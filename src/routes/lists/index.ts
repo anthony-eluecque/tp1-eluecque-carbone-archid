@@ -1,12 +1,14 @@
 import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 
 import { ListsController } from '../../controllers';
+import { schemas } from '../../schemas';
 
 const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
     const listsController = new ListsController(fastify);
 
     fastify.get(
         '/',
+        { schema :  schemas.lists.getLists },
         listsController.getLists.bind(listsController)
     );
 
@@ -44,6 +46,8 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
         '/:id/items/:itemId',
         listsController.deleteItemInList.bind(listsController)
     );
+
+    fastify.put('/:id/status/:state', listsController.changeListState.bind(listsController));
 }
 
 export default lists;
