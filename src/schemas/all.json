@@ -285,6 +285,86 @@
       ],
       "additionalProperties": false
     },
+    "GetItemById": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoItem#"
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<TodoItem>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoItem#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "GetUserById": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "User#"
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<User>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "User#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
     "ErrorResponse": {
       "type": "object",
       "properties": {
@@ -350,22 +430,6 @@
         "name",
         "state"
       ]
-    },
-    "User": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ],
-      "additionalProperties": false
     }
   }
 }

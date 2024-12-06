@@ -17,9 +17,9 @@ export class ItemsController {
             const result = await this._repository.getItemById(id);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
             }
-            Res.send(reply, HttpStatusCode.OK, result.message!, result.data);
+            return Res.send(reply, HttpStatusCode.OK, result.message!, result.data);
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while fetching items", error);
         }
@@ -31,13 +31,13 @@ export class ItemsController {
             const result = await this._repository.getItemById(itemId);
 
             if (!result.success) {
-                Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
+                return Res.send(reply, HttpStatusCode.NOT_FOUND, result.error!)
             }
 
             const item = result.data!;
             item.assignedTo.push(userId);
             await this._repository.updateItem(itemId, item);
-            Res.send(reply, HttpStatusCode.OK, result.message!, item);
+            return Res.send(reply, HttpStatusCode.OK, result.message!, item);
 
         } catch (error) {
             Res.error(reply, HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while assigning user to an item", error);

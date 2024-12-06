@@ -1,4 +1,5 @@
 import { TodoItem, TodoList } from "./todo"
+import {User} from "./user";
 
 export enum HttpStatusCode {
     OK = 200,
@@ -45,6 +46,8 @@ export interface NoContentResponse {}
 export interface GetListsResponse extends SuccessResponse<TodoList[]> {};
 export interface GetListByIdResponse extends SuccessResponse<TodoList> {};
 export interface GetItemsInList extends SuccessResponse<TodoItem[]> {};
+export interface GetItemById extends SuccessResponse<TodoItem> {};
+export interface GetUserById extends SuccessResponse<User> {};
 
 export interface ErrorResponse {
     message: string;

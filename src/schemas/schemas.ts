@@ -9,6 +9,8 @@ import {
     updateItemInList,
     changeListState
 } from "./lists";
+import { createUser, getUserById } from "./users";
+import { getItemById, assignUserToItem } from "./items";
 
 const schemas = {
     lists : {
@@ -21,6 +23,14 @@ const schemas = {
         deleteItemInList: deleteItemInList,
         updateItemInList: updateItemInList,
         changeListState: changeListState
+    },
+    items : {
+        getItemById: getItemById,
+        assignUserToItem: assignUserToItem,
+    },
+    users : {
+        getUserById : getUserById,
+        createUser : createUser
     }
 }
 
