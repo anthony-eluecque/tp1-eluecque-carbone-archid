@@ -1,1 +1,4 @@
-export { getLists } from "./schemas";
+export { 
+    getLists,
+    getListById
+} from "./schemas";

@@ -79,6 +79,87 @@
       ],
       "additionalProperties": false
     },
+    "NotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "GetListsResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoList#"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<def-interface-211985365-121-266-211985365-0-267[]>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoList#"
+          }
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "TodoList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
+        },
+        "state": {
+          "$ref": "State#"
+        }
+      },
+      "required": [
+        "description",
+        "id",
+        "items",
+        "name",
+        "state"
+      ],
+      "additionalProperties": false
+    },
     "TodoItem": {
       "type": "object",
       "properties": {
@@ -103,6 +184,54 @@
         "description",
         "id",
         "state"
+      ],
+      "additionalProperties": false
+    },
+    "GetListByIdResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoList#"
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<TodoList>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoList#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message",
+        "error"
       ],
       "additionalProperties": false
     },
@@ -155,37 +284,6 @@
         "name",
         "state"
       ]
-    },
-    "TodoList": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "TodoItem#"
-          }
-        },
-        "state": {
-          "$ref": "State#"
-        }
-      },
-      "required": [
-        "description",
-        "id",
-        "items",
-        "name",
-        "state"
-      ],
-      "additionalProperties": false
     },
     "User": {
       "type": "object",

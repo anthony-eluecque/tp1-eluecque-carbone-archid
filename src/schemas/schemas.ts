@@ -1,8 +1,9 @@
-import { getLists } from "./lists";
+import { getLists, getListById } from "./lists";
 
 const schemas = {
     lists : {
         getLists : getLists,
+        getListById : getListById
     }
 }
 

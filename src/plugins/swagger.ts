@@ -18,6 +18,21 @@ export default fp<FastifySwaggerOptions>(async (fastify) => {
     ...JsonSchemas.definitions.State,
   })
 
+  fastify.addSchema({
+    "$id": "TodoListsResponse",
+    ...JsonSchemas.definitions.GetListsResponse,
+  })
+
+  fastify.addSchema({
+    "$id": "TodoListResponse",
+    ...JsonSchemas.definitions.GetListByIdResponse,
+  })
+
+  fastify.addSchema({
+    "$id": "NotFoundResponse",
+    ...JsonSchemas.definitions.NotFoundResponse,
+  })
+
   fastify.register(swagger, {
     openapi: {
       info: { title: 'Todo API', version: '1.0.0' },

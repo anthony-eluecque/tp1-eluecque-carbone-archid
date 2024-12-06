@@ -14,6 +14,7 @@ const lists : FastifyPluginAsync = async (fastify: FastifyInstance) => {
 
     fastify.get(
         '/:id',
+        { schema : schemas.lists.getListById },
         listsController.getListById.bind(listsController)
     );
 
