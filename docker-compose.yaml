@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  archid-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
