@@ -1,0 +1,435 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "State": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "IN-PROGRESS",
+        "DONE"
+      ]
+    },
+    "EntityId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "HttpStatusCode": {
+      "type": "number",
+      "enum": [
+        200,
+        201,
+        204,
+        400,
+        404,
+        409,
+        500
+      ]
+    },
+    "ItemsParams": {
+      "type": "object",
+      "properties": {
+        "Params": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "itemId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "itemId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "Params"
+      ],
+      "additionalProperties": false
+    },
+    "ListParams": {
+      "type": "object",
+      "properties": {
+        "Params": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "Params"
+      ],
+      "additionalProperties": false
+    },
+    "NotFoundResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "ConflictResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "BadRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "NoContentResponse": {
+      "type": "object",
+      "additionalProperties": false
+    },
+    "GetListsResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoList#"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<def-interface-211985365-121-266-211985365-0-267[]>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoList#"
+          }
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "TodoList": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
+        },
+        "state": {
+          "$ref": "State#"
+        }
+      },
+      "required": [
+        "description",
+        "id",
+        "items",
+        "name",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "TodoItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "State#"
+        },
+        "assignedTo": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "assignedTo",
+        "description",
+        "id",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "GetListByIdResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoList#"
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<TodoList>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoList#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "GetItemsInList": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<def-interface-795923995-127-257-795923995-0-258[]>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "GetItemById": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoItem#"
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<TodoItem>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "TodoItem#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "GetUserById": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "User#"
+        }
+      },
+      "required": [
+        "data",
+        "message"
+      ]
+    },
+    "SuccessResponse<User>": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "User#"
+        }
+      },
+      "required": [
+        "message",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "message",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "RequestItemUpdated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "State#"
+        },
+        "assignedTo": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "assignedTo",
+        "description",
+        "state"
+      ]
+    },
+    "RequestListUpdated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "TodoItem#"
+          }
+        },
+        "state": {
+          "$ref": "State#"
+        }
+      },
+      "required": [
+        "description",
+        "items",
+        "name",
+        "state"
+      ]
+    }
+  }
+}
