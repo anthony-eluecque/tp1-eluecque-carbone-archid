@@ -19,8 +19,8 @@ export default function App() {
   useEffect(() => {
     apiClient.getLists().then((data) => {
       // @ts-ignore
-      setLists(data);
-    });
+      setLists(data.data);
+    }); 
   }, []);
 
   useEffect(() => {

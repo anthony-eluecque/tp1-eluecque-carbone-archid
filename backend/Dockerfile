@@ -6,7 +6,7 @@ COPY . .
 RUN npm run build:ts
 
 # Sending to production
-FROM node:18 as production
+FROM node:22 as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}

@@ -1,9 +1,21 @@
-version: '3.8'
-
 services:
   archid-backend:
+    container_name: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+  db:
+    image: redis:7.4.1
+    container_name: db
+    ports:
+      - 6379:6379
+  
+  todo-list-frontend:
+    container_name: frontend
+    build:
+      context: . 
+      dockerfile: ./todolists-frontend/Dockerfile
+    ports:
+      - "3006:3006"

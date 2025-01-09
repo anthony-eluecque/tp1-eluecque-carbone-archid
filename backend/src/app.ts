@@ -2,6 +2,7 @@ import { join } from 'path';
 import AutoLoad, {AutoloadPluginOptions} from '@fastify/autoload';
 import { FastifyPluginAsync, FastifyServerOptions } from 'fastify';
 import SwaggerUI from "@fastify/swagger-ui";
+import cors from '@fastify/cors';
 
 export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {
 
@@ -15,7 +16,11 @@ const app: FastifyPluginAsync<AppOptions> = async (
     opts
 ): Promise<void> => {
   // Place here your custom code!
-
+  await fastify.register(cors, {
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  }); 
+  console.log("CORS plugin registered");
   // Do not touch the following lines
 
   // This loads all plugins defined in plugins
@@ -36,6 +41,8 @@ const app: FastifyPluginAsync<AppOptions> = async (
   void fastify.register(SwaggerUI, {
     routePrefix: "/api-docs"
   })
+
+
 };
 
 export default app;
