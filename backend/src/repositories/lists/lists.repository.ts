@@ -1,12 +1,11 @@
-import { FastifyInstance } from "fastify";
-import { State, TodoItem, TodoList } from "../../types";
-import { } from "@fastify/leveldb"
+import {State, TodoItem, TodoList} from "../../types";
+import {redisClient} from "../../../db";
 
-interface LevelDBError extends Error {
+interface RedisError extends Error {
     notFound?: boolean;
 }
 
-const isLevelDBError = (error: unknown): error is LevelDBError => {
+const isRedisError = (error: unknown): error is RedisError => {
     return typeof error === 'object' && error !== null && 'notFound' in error;
 }
 
@@ -19,18 +18,22 @@ interface RepositoryResult<T> {
 
 export default class ListsRepository {
 
-    constructor(private db : FastifyInstance) {}
-
     getListById = async (id : string) : Promise<RepositoryResult<TodoList>> => {
         try {
-            const list = await this.db.level.lists.get(id);
+            const client = await redisClient();
+            const list = await client.get(`list:${id}`);
+            if (!list)
+                return {
+                    success: false,
+                    error: `List with id ${id} not found`,
+                };
             return { 
                 success: true, 
                 data: JSON.parse(list),
                 message: "List fetched"
             };
         } catch (error) {
-            if (isLevelDBError(error) && error.notFound) {
+            if (isRedisError(error) && error.notFound) {
                 return { 
                     success: false, 
                     error: `List with id ${id} not found` 
@@ -41,22 +44,23 @@ export default class ListsRepository {
     }
 
     getLists = async () : Promise<TodoList[]> => {
-        const lists = this.db.level.lists.iterator();
-        const result: TodoList[] = new Array<TodoList>();
-
-        // @ts-ignore
-        for await(const [_, value] of lists) { 
-            result.push(JSON.parse(value));
+        try {
+            const client = await redisClient();
+            const keys = await client.keys("list:*");
+            const lists = await Promise.all(keys.map((key) => client.get(key)));
+            return lists.map((list) => JSON.parse(list!));
+        } catch (error) {
+            throw new Error("Error fetching all list")
         }
-        return result;
     }
 
     createList = async(list : TodoList) : Promise<RepositoryResult<TodoList>> => {
-        
-        const listResult = await this.getListById(list.id);
 
-        if (listResult.success) {
-            return { success: false, error: "List with this id is existing" };
+        const client = await redisClient();
+        const existingList = await this.getListById(list.id);
+
+        if (existingList.success) {
+            return { success: false, error: "List with this id is already existing" };
         }
         
         const newList : TodoList = {
@@ -65,7 +69,7 @@ export default class ListsRepository {
             items: list.items ?? []
         }
 
-        await this.db.level.lists.put(newList.id, JSON.stringify(newList));
+        await client.set(`list:${newList.id}`, JSON.stringify(newList));
         return { 
             success: true, 
             message: "List succesfully created",
@@ -74,7 +78,8 @@ export default class ListsRepository {
     }
 
     updateList = async (id : string, list : TodoList) : Promise<void> => {
-        await this.db.level.lists.put(id, JSON.stringify(list));
+        const client = await redisClient();
+        await client.set(`list:${id}`, JSON.stringify(list));
     }
 
     deleteItemInList = async (id : string, itemId : string) : Promise<RepositoryResult<null>> => {
@@ -83,17 +88,18 @@ export default class ListsRepository {
         if (!listResult.success) {
             return { success: false, error: listResult.error };
         }
-        const list = listResult.data!;
 
+        const list = listResult.data!;
         const initialLength = list.items.length;
         list.items = list.items.filter(item => item.id !== itemId);
 
         if (list.items.length === initialLength) {
             return { success: false, error: `Item with id ${itemId} not found in list ${id}` };
         }
-        
-        await this.updateList(id, list);
-        return { success: true };
+
+        const client = await redisClient();
+        await client.set(`list:${list.id}`, JSON.stringify(list));
+        return { success: true, message: "Item succesfully deleted from list" };
     }
 
     updateItemInList = async (id : string, itemId : string, newItem : any) : Promise<RepositoryResult<null>> => {
@@ -103,16 +109,8 @@ export default class ListsRepository {
             return { success: false, error: listResult.error };
         }
 
-        if (!Object.values(State).includes(newItem.state)) {
-            return { 
-                success: false, 
-                error: "Invalid state value" 
-            };
-        }
-
         const list = listResult.data!;
-
-        const itemIndex = list.items.findIndex(item => item.id === itemId);
+        const itemIndex = list.items.findIndex(item => item.id === newItem.id);
 
         if (itemIndex === -1) {
             return { success: false, error: `Item with id ${itemId} not found in list ${id}` };
@@ -122,6 +120,7 @@ export default class ListsRepository {
             ...list.items[itemIndex],
             ...newItem
         };
+
         await this.updateList(id, list);
 
         return { success: true, message: `Item with id ${itemId} updated in list ${id}` };
@@ -133,15 +132,9 @@ export default class ListsRepository {
         if (!listResult.success) {
             return { success: false, error: listResult.error };
         }
-        
-        if (!Object.values(State).includes(newItem.state)) {
-            return { 
-                success: false, 
-                error: "Invalid state value" 
-            };
-        }
 
-        const list = listResult.data!;        
+        const client = await redisClient();
+        const list = listResult.data!;
         const existingItem = list.items.find(item => item.id === newItem.id);
 
         if (existingItem) {
@@ -149,7 +142,7 @@ export default class ListsRepository {
         }
 
         list.items.push(newItem);
-        await this.updateList(id, list);
+        await client.set(`list:${id}`, JSON.stringify(list));
         return { success: true, message: `Item with id ${newItem.id} added to list ${id}` };
 
     }
@@ -166,8 +159,6 @@ export default class ListsRepository {
     }
 
     updateListState = async (id: string, state: State) : Promise<RepositoryResult<TodoList>> => {
-        
-
         if (!Object.values(State).includes(state)) {
             return { 
                 success: false, 
@@ -181,9 +172,10 @@ export default class ListsRepository {
             return { success: false, error: listResult.error };
         }
 
+        const client = await redisClient();
         const list = listResult.data!;
         list.state = state;
-        await this.updateList(id, list);
+        await client.set(`list:${id}`, JSON.stringify(list));
         return {
             success: true, 
             message: "State updated" 
